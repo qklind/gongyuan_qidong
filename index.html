@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#1a1410">
+<title>公元胶片博物馆 · 数字暗房</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;background:#1a1410;color:#e8dcc8;font-family:"PingFang SC","Noto Serif SC","Songti SC",serif;overflow-x:hidden}
+body{min-height:100vh;min-height:100dvh;background:
+  radial-gradient(ellipse at top, #2a2018 0%, #1a1410 60%),
+  repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(255,220,180,.015) 3px, rgba(255,220,180,.015) 4px);}
+.page{display:none;min-height:100vh;min-height:100dvh;padding:env(safe-area-inset-top) 20px env(safe-area-inset-bottom);animation:fadeIn .6s ease;position:relative;z-index:10}
+.page.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+/* ========== 首页 ========== */
+.hero{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;min-height:100dvh;padding:24px 16px;text-align:center}
+.film-gate{width:100%;max-width:270px;aspect-ratio:3/4;background:linear-gradient(145deg,#0e0a08,#1f1712);border:2px solid #3a2c20;border-radius:12px;position:relative;padding:14px;margin-bottom:22px;box-shadow:0 18px 44px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,220,180,.05)}
+.film-gate::before,.film-gate::after{content:'';position:absolute;left:-2px;right:-2px;height:20px;background:repeating-linear-gradient(90deg,#2a2018 0,#2a2018 5px,#0e0a08 5px,#0e0a08 10px);border-radius:3px}
+.film-gate::before{top:-10px}
+.film-gate::after{bottom:-10px}
+.film-gate-inner{width:100%;height:100%;background:linear-gradient(180deg,#0a0705,#14100c);border-radius:7px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px 14px;overflow:hidden;position:relative}
+.grain-overlay{position:absolute;inset:0;opacity:.12;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");pointer-events:none;mix-blend-mode:overlay}
+.hero-title{font-size:34px;font-weight:700;color:#f4ead6;letter-spacing:8px;margin-bottom:7px;font-family:"Noto Serif SC","Songti SC",serif}
+.hero-sub{font-size:15px;color:#a89270;letter-spacing:3px;margin-bottom:22px}
+.hero-en{font-size:13px;color:#856e58;letter-spacing:2.5px;margin-bottom:6px;opacity:.92}
+.divider{width:64px;height:1px;background:linear-gradient(90deg,transparent,#a89270,transparent);margin:18px 0}
+.hero-tagline{font-size:17px;color:#d6c5a6;line-height:1.9;letter-spacing:2px}
+.btn{border:none;outline:none;cursor:pointer;font-family:inherit;transition:all .25s ease;letter-spacing:2px}
+.btn-primary{background:linear-gradient(135deg,#8b6914,#a67c00,#c9a227);color:#1a1410;padding:15px 38px;border-radius:28px;font-size:17px;font-weight:600;box-shadow:0 7px 26px rgba(201,162,39,.28),inset 0 1px 0 rgba(255,255,255,.3)}
+.btn-primary:active{transform:scale(.96);box-shadow:0 3px 14px rgba(201,162,39,.22)}
+.btn-outline{background:transparent;color:#d3b887;border:1.5px solid #6a5440;padding:13px 28px;border-radius:24px;font-size:16px}
+.btn-outline:active{background:rgba(201,168,118,.14)}
+.btn-ghost{background:rgba(255,220,180,.06);color:#d4c2a4;padding:11px 22px;border-radius:20px;font-size:14.5px;border:1px solid rgba(201,168,118,.22)}
+.footer-tip{position:fixed;bottom:calc(env(safe-area-inset-bottom) + 10px);left:0;right:0;text-align:center;font-size:12.5px;color:#75604c;letter-spacing:1.2px;pointer-events:none}
+
+/* ========== 顶部栏 ========== */
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:12px 4px 14px;position:sticky;top:0;background:linear-gradient(180deg,rgba(26,20,16,.98),rgba(26,20,16,.85) 70%,transparent);z-index:50;backdrop-filter:blur(8px)}
+.back-btn{width:40px;height:40px;border-radius:50%;background:rgba(201,168,118,.09);border:1px solid rgba(201,168,118,.22);color:#d3b887;display:flex;align-items:center;justify-content:center;font-size:20px}
+.top-title{font-size:18px;color:#eedfc4;letter-spacing:2.5px;font-family:"Noto Serif SC",serif;font-weight:600}
+.top-right{width:40px}
+.section-title{font-size:17px;color:#ddb885;letter-spacing:3.5px;margin:10px 4px 16px;font-family:"Noto Serif SC",serif;font-weight:600;display:flex;align-items:center;gap:10px}
+.section-title::before,.section-title::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(170,140,100,.5))}
+.section-title::after{background:linear-gradient(90deg,rgba(170,140,100,.5),transparent)}
+
+/* ========== 上传页 ========== */
+.upload-area{border:2px dashed rgba(170,130,50,.55);border-radius:18px;padding:48px 30px;text-align:center;background:rgba(201,162,39,.03);transition:all .3s;position:relative;margin-bottom:19px}
+.upload-area.dragover{border-color:#c9a227;background:rgba(201,162,39,.11);transform:scale(1.01)}
+.upload-icon{font-size:62px;margin-bottom:14px;opacity:.92}
+.upload-tip{font-size:19px;color:#ddb885;margin-bottom:8px;letter-spacing:1.8px;font-weight:600}
+.upload-sub{font-size:15.5px;color:#8a7360;line-height:1.9}
+.upload-action{margin-top:22px}
+.quick-entry{display:grid;grid-template-columns:repeat(4, 1fr);gap:15px 15px;margin-bottom:19px}
+@media (max-width: 520px){.quick-entry{grid-template-columns:repeat(2, 1fr)}}
+@media (min-width: 521px) and (max-width: 860px){.quick-entry{grid-template-columns:repeat(3, 1fr)}}
+.quick-card{display:flex;flex-direction:column;gap:10px;padding:16px 13px 13px;background:linear-gradient(160deg,rgba(52,40,30,.64),rgba(28,22,18,.64));border:1px solid rgba(155,125,85,.23);border-radius:15px;cursor:pointer;transition:all .3s;position:relative;overflow:hidden;min-height:200px}
+.quick-card:active{transform:scale(.97);border-color:rgba(201,162,39,.46)}
+.quick-card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:7px}
+.quick-thumb{width:68px;height:68px;border-radius:13px;flex-shrink:0;background:linear-gradient(145deg,#221a14,#3a2c20);display:flex;align-items:center;justify-content:center;font-size:32px;border:1px solid rgba(160,125,85,.32)}
+.quick-tag{font-size:11px;letter-spacing:1.6px;padding:4px 9px;border-radius:5px 5px 5px 11px;background:rgba(139,105,20,.24);color:#ddb885;font-weight:600;white-space:nowrap;border:1px solid rgba(160,125,80,.36);line-height:1.35}
+.quick-meta{flex:1;min-width:0;display:flex;flex-direction:column;gap:5px}
+.quick-name{font-size:15.5px;color:#f4ead6;letter-spacing:.9px;line-height:1.35;font-family:"Noto Serif SC",serif;font-weight:600}
+.quick-era{font-size:12px;color:#c9a227;letter-spacing:1.3px;font-weight:600}
+.quick-desc{font-size:12.5px;color:#b6a082;line-height:1.65;margin:3px 0 4px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.quick-kws{display:flex;flex-wrap:wrap;gap:6px;margin-top:auto;padding-top:3px}
+.quick-kw{font-size:11.5px;padding:5px 10px;background:rgba(100,75,40,.2);border-radius:17px;color:#c7ae85;letter-spacing:.6px;border:1px solid rgba(140,110,70,.26)}
+
+/* ========== 胶片选择页 ========== */
+.selected-preview{width:100%;max-width:100%;max-height:68vh;border-radius:17px;overflow:hidden;aspect-ratio:4/3;margin:0 auto 19px;position:relative;background:#050403;border:1px solid rgba(139,115,85,.28)}
+.selected-preview img{width:100%;height:100%;object-fit:contain;object-position:center;display:block;background:#050403}
+.mode-tabs{display:flex;gap:11px;margin-bottom:15px}
+.mode-tab{flex:1;padding:11px 0;text-align:center;background:rgba(255,220,180,.04);border:1px solid rgba(160,130,90,.26);border-radius:12px;font-size:14.5px;color:#a69073;letter-spacing:1.1px;cursor:pointer;transition:all .25s;font-weight:500}
+.mode-tab.active{background:linear-gradient(135deg,rgba(139,105,20,.32),rgba(201,162,39,.17));border-color:#a07a26;color:#f4ead6;box-shadow:inset 0 1px 0 rgba(255,220,180,.14)}
+.chat-input-box{background:linear-gradient(145deg,rgba(50,38,28,.72),rgba(26,20,16,.72));border:1px solid rgba(160,130,90,.26);border-radius:14px;padding:13px;margin-bottom:15px}
+.chat-hint{font-size:13px;color:#917a62;margin-bottom:9px;line-height:1.85}
+.chat-input-wrap{display:flex;gap:11px}
+.chat-input{flex:1;background:rgba(10,7,5,.62);border:1px solid rgba(160,130,90,.32);border-radius:10px;padding:12px 15px;color:#eedfc4;font-size:15.5px;font-family:inherit;outline:none;letter-spacing:1.1px}
+.chat-input::placeholder{color:#705c48}
+.send-btn{width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,#8b6914,#c9a227);border:none;color:#1a1410;font-size:19px;display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer}
+.send-btn:disabled{opacity:.4;cursor:not-allowed}
+.suggestion-chips{display:flex;flex-wrap:wrap;gap:9px;margin-bottom:15px}
+.chip{padding:8px 14px;background:rgba(139,105,20,.14);border:1px solid rgba(160,130,80,.36);border-radius:17px;font-size:13px;color:#ddb885;cursor:pointer;white-space:nowrap;transition:all .2s;font-weight:500}
+.chip:active{background:rgba(201,162,39,.22);transform:scale(.96)}
+.film-list{display:grid;grid-template-columns:repeat(4, 1fr);gap:15px 15px;margin-bottom:9px}
+@media (max-width: 520px){.film-list{grid-template-columns:repeat(2, 1fr)}}
+@media (min-width: 521px) and (max-width: 860px){.film-list{grid-template-columns:repeat(3, 1fr)}}
+.film-card{display:flex;flex-direction:column;gap:10px;padding:16px 13px 13px;background:linear-gradient(160deg,rgba(52,40,30,.64),rgba(28,22,18,.64));border:1px solid rgba(155,125,85,.23);border-radius:15px;cursor:pointer;transition:all .3s;position:relative;overflow:hidden;min-height:200px}
+.film-card:active{transform:scale(.98)}
+.film-card.selected{border-color:#c9a227;box-shadow:0 0 0 1.5px #c9a227,0 9px 24px rgba(201,162,39,.2);background:linear-gradient(160deg,rgba(139,105,20,.24),rgba(28,22,18,.7))}
+.film-card.selected::after{content:'✓';position:absolute;top:11px;right:11px;width:24px;height:24px;background:linear-gradient(135deg,#c9a227,#8b6914);border-radius:50%;color:#1a1410;font-size:13px;display:flex;align-items:center;justify-content:center;font-weight:700;z-index:4}
+.film-card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:7px}
+.film-thumb{width:68px;height:68px;border-radius:13px;flex-shrink:0;background:linear-gradient(145deg,#221a14,#3a2c20);display:flex;align-items:center;justify-content:center;font-size:32px;border:1px solid rgba(160,125,85,.32)}
+.film-tag{font-size:11px;letter-spacing:1.6px;padding:4px 9px;border-radius:5px 5px 5px 11px;background:rgba(139,105,20,.24);color:#ddb885;font-weight:600;white-space:nowrap;border:1px solid rgba(160,125,80,.36);line-height:1.35}
+.film-meta{flex:1;min-width:0;display:flex;flex-direction:column;gap:5px}
+.film-name{font-size:15.5px;color:#f4ead6;letter-spacing:.9px;line-height:1.35;font-family:"Noto Serif SC",serif;font-weight:600}
+.film-era{font-size:12px;color:#c9a227;letter-spacing:1.3px;font-weight:600}
+.film-desc{font-size:12.5px;color:#b6a082;line-height:1.65;margin:3px 0 4px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.film-kws{display:flex;flex-wrap:wrap;gap:6px;margin-top:auto;padding-top:3px}
+.kw{font-size:11.5px;padding:5px 10px;background:rgba(100,75,40,.2);border-radius:17px;color:#c7ae85;letter-spacing:.6px;border:1px solid rgba(140,110,70,.26)}
+.bottom-bar{position:sticky;bottom:0;padding:13px 0 calc(env(safe-area-inset-bottom) + 13px);background:linear-gradient(0deg,#1a1410 60%,transparent);margin-top:19px}
+.bottom-bar .btn-primary{width:100%;padding:17px;font-size:17px;font-weight:600}
+.bottom-bar .btn-primary:disabled{opacity:.4;cursor:not-allowed;filter:grayscale(.5)}
+
+/* ========== 结果页 ========== */
+.result-hero{margin-bottom:17px}
+.result-img-wrap{position:relative;width:100%;border-radius:17px;overflow:hidden;background:#050403;border:1px solid rgba(155,125,85,.32);box-shadow:0 15px 38px rgba(0,0,0,.52);display:flex;justify-content:center}
+.compare{position:relative;width:100%;max-width:100%;max-height:68vh;aspect-ratio:4/3;overflow:hidden;user-select:none;-webkit-user-select:none;background:#050403;margin:0 auto}
+.compare img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;object-position:center;pointer-events:none;-webkit-user-drag:none;background:#050403}
+.compare .after{clip-path:inset(0 0 0 var(--split,50%))}
+.slider-handle{position:absolute;top:0;bottom:0;left:var(--split,50%);width:2.8px;background:linear-gradient(180deg,#c9a227,#8b6914);transform:translateX(-50%);cursor:ew-resize;pointer-events:none;box-shadow:0 0 20px rgba(201,162,39,.48)}
+.slider-handle::before{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#8b6914,#c9a227);box-shadow:0 6px 17px rgba(0,0,0,.52),inset 0 1px 0 rgba(255,255,255,.34)}
+.slider-handle::after{content:'⇄';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:#1a1410;font-size:14px;font-weight:700}
+.compare-label{position:absolute;bottom:10px;padding:6px 13px;background:rgba(0,0,0,.62);border-radius:15px;font-size:12px;color:#eedfc4;letter-spacing:2.2px;backdrop-filter:blur(4px);font-weight:500}
+.label-before{left:10px}
+.label-after{right:10px;background:rgba(139,105,20,.8)}
+.film-result-banner{margin:-4px 0 15px;padding:13px 15px;background:linear-gradient(135deg,rgba(139,105,20,.27),rgba(201,162,39,.12));border:1px solid rgba(201,162,39,.37);border-radius:14px;display:flex;align-items:center;gap:13px}
+.banner-icon{font-size:26px}
+.banner-text{flex:1}
+.banner-name{font-size:16px;color:#f4ead6;letter-spacing:1.1px;font-family:"Noto Serif SC",serif;font-weight:600}
+.banner-era{font-size:12px;color:#e0b95f;letter-spacing:1.6px;margin-top:4px;font-weight:600}
+.story-card{background:linear-gradient(160deg,rgba(50,38,28,.74),rgba(24,18,14,.74));border:1px solid rgba(160,130,90,.26);border-radius:16px;padding:18px 18px;margin-bottom:15px;position:relative}
+.story-title{font-size:16.5px;color:#d6a53c;letter-spacing:2.8px;margin-bottom:11px;font-family:"Noto Serif SC",serif;font-weight:600;display:flex;align-items:center;gap:9px}
+.story-title::before{content:'📜';font-size:16px}
+.story-content{font-size:15.5px;color:#dbc9a8;line-height:2;letter-spacing:.6px;text-indent:2em;margin-bottom:13px}
+.fun-fact{padding:13px 14px;border-left:2.8px solid #a57c2a;background:rgba(139,105,20,.12);border-radius:0 10px 10px 0;font-size:14px;color:#c8af85;line-height:1.9;font-style:italic}
+.fun-fact::before{content:'💡 冷知识：';color:#e0b95f;font-weight:600;font-style:normal}
+.action-grid{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin-bottom:15px}
+.action-btn{padding:14px 11px;border-radius:14px;font-size:14px;display:flex;align-items:center;justify-content:center;gap:8px;letter-spacing:1.1px;font-family:inherit;cursor:pointer;border:1px solid rgba(160,130,90,.26);background:linear-gradient(145deg,rgba(50,38,28,.58),rgba(28,22,18,.58));color:#d3b887;transition:all .25s;font-weight:500}
+.action-btn.primary{background:linear-gradient(135deg,#8b6914,#c9a227);color:#1a1410;border:none;font-weight:600;box-shadow:0 8px 22px rgba(201,162,39,.24)}
+.action-btn:active{transform:scale(.97)}
+
+/* ========== 加载动画 ========== */
+.loading-mask{position:fixed;inset:0;background:rgba(10,7,5,.94);z-index:999;display:none;align-items:center;justify-content:center;flex-direction:column;backdrop-filter:blur(10px)}
+.loading-mask.active{display:flex;animation:fadeIn .3s}
+.film-roll{width:140px;height:140px;position:relative;margin-bottom:36px}
+.film-roll::before,.film-roll::after{content:'';position:absolute;border-radius:50%;border:4.5px solid transparent}
+.film-roll::before{inset:0;border-top-color:#c9a227;border-right-color:#8b6914;animation:spin 1.2s linear infinite}
+.film-roll::after{inset:17px;border-bottom-color:rgba(224,185,95,.62);border-left-color:rgba(165,124,42,.58);animation:spin 1.5s linear infinite reverse}
+.film-core{position:absolute;inset:37px;border-radius:50%;background:radial-gradient(circle,#2a2018,#0e0a08);border:3px solid #3a2c20;display:flex;align-items:center;justify-content:center;font-size:32px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-title{font-size:25px;color:#f0e1c5;letter-spacing:5.5px;margin-bottom:15px;font-family:"Noto Serif SC",serif;font-weight:600}
+.loading-step{font-size:17.5px;color:#8f785f;letter-spacing:1.6px;margin-bottom:8px;opacity:0;animation:blink 2s ease infinite}
+.loading-step:nth-child(3){animation-delay:.4s}
+.loading-step:nth-child(4){animation-delay:.8s}
+.loading-step:nth-child(5){animation-delay:1.2s}
+@keyframes blink{0%,100%{opacity:.38}50%{opacity:1}}
+
+/* ========== Toast ========== */
+.toast{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);padding:16px 27px;background:rgba(10,7,5,.93);border:1px solid rgba(201,162,39,.32);border-radius:13px;color:#e8dcc8;font-size:14.5px;z-index:9999;letter-spacing:1.1px;display:none;box-shadow:0 11px 42px rgba(0,0,0,.52)}
+.toast.show{display:block;animation:toastIn .3s ease}
+@keyframes toastIn{from{opacity:0;transform:translate(-50%,-40%)}to{opacity:1;transform:translate(-50%,-50%)}}
+
+#fileInput{display:none}
+
+/* ============ 全局页面水印（右下角半透明公元印章） ============ */
+.page-watermark{position:fixed;right:20px;bottom:24px;z-index:2;pointer-events:none;opacity:.36;user-select:none;-webkit-user-drag:none;transform:rotate(-2deg)}
+.page-watermark img{max-width:230px;height:auto;display:block;filter:drop-shadow(0 5px 16px rgba(200,16,46,.55))}
+@media (max-width: 480px){.page-watermark{right:14px;bottom:18px}.page-watermark img{max-width:170px}}
+
+/* ============ 环境检测横幅 ============ */
+.env-banner{position:sticky;top:0;z-index:100;padding:15px 22px;font-size:14.5px;line-height:1.75;backdrop-filter:blur(10px);}
+.env-banner.warn{background:linear-gradient(90deg,#5a2a18,#7a3a22);color:#ffe3cf;border-bottom:2px solid #e76f51;}
+.env-banner.ok{background:linear-gradient(90deg,#183a24,#225534);color:#d3ffdd;border-bottom:2px solid #6abf69;}
+.env-banner.err{background:linear-gradient(90deg,#3a1818,#7a2222);color:#ffd5d5;border-bottom:2px solid #e76f51;}
+.env-banner .title{font-weight:700;font-size:15.5px;letter-spacing:1.1px;margin-bottom:5px;display:flex;align-items:center;gap:9px;}
+.env-banner .row{margin-top:7px;display:flex;flex-wrap:wrap;gap:9px;}
+.env-btn{display:inline-block;border:none;outline:none;cursor:pointer;padding:8px 15px;border-radius:9px;font-size:13px;font-weight:600;font-family:inherit;transition:.2s;}
+.env-btn.primary{background:#e9c46a;color:#1a1410;}
+.env-btn.ghost{background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.25);}
+.env-btn:active{transform:scale(.96);}
+.env-banner code{display:inline-block;background:rgba(0,0,0,.35);padding:3px 8px;border-radius:6px;font-family:ui-monospace,Consolas,monospace;font-size:12px;}
+</style>
+</head>
+<body>
+
+<div id="envBanner" class="env-banner warn" style="display:none"></div>
+
+<!-- ============ 首页 ============ -->
+<div class="page active" id="pageHome">
+  <div class="hero">
+    <div class="film-gate">
+      <div class="film-gate-inner">
+        <div class="grain-overlay"></div>
+        <div class="hero-en">GONGYUAN · FILM MUSEUM</div>
+        <div class="divider"></div>
+        <div class="hero-title">公元胶片</div>
+        <div class="hero-sub">数 字 暗 房</div>
+        <div class="divider"></div>
+        <div class="hero-tagline">
+          让一张普通的照片<br>
+          穿过时光的暗房<br>
+          重现公元胶片的温度
+        </div>
+      </div>
+    </div>
+    <button class="btn btn-primary" onclick="goPage('pageUpload')">开始冲印</button>
+    <div style="margin-top:18px">
+      <button class="btn btn-ghost" onclick="showFilmsIntro()">📚 关于胶片</button>
+    </div>
+  </div>
+  <div class="footer-tip">SINCE 1949 · SHANTOU</div>
+</div>
+
+<!-- ============ 上传页 ============ -->
+<div class="page" id="pageUpload">
+  <div class="topbar">
+    <button class="back-btn" onclick="goPage('pageHome')">‹</button>
+    <div class="top-title">上 传 照 片</div>
+    <div class="top-right"></div>
+  </div>
+  <div class="section-title">选 择 冲 印 内 容</div>
+  <div class="upload-area" id="dropZone" onclick="document.getElementById('fileInput').click()">
+    <div class="upload-icon">📷</div>
+    <div class="upload-tip">点击选择 或 拖拽图片到此处</div>
+    <div class="upload-sub">支持 JPG / PNG / WEBP<br>推荐使用高像素原图，效果更佳</div>
+    <div class="upload-action">
+      <button class="btn btn-primary">选择照片</button>
+    </div>
+  </div>
+  <input type="file" id="fileInput" accept="image/*" onchange="handleFile(this.files[0])">
+  <div class="section-title">快 速 体 验</div>
+  <div class="quick-entry">
+    <div class="quick-card" onclick="selectQuickMode('自然')">
+      <div class="quick-card-top">
+        <div class="quick-thumb">🏞️</div>
+        <div class="quick-tag">风景</div>
+      </div>
+      <div class="quick-meta">
+        <div class="quick-name">风景 · 建筑</div>
+        <div class="quick-era">90年代彩卷</div>
+        <div class="quick-desc">适合开阔山水与户外建筑，暖调褪色带颗粒</div>
+      </div>
+      <div class="quick-kws">
+        <span class="quick-kw">高对比</span>
+        <span class="quick-kw">夕阳</span>
+      </div>
+    </div>
+    <div class="quick-card" onclick="selectQuickMode('人像')">
+      <div class="quick-card-top">
+        <div class="quick-thumb">👤</div>
+        <div class="quick-tag">人像</div>
+      </div>
+      <div class="quick-meta">
+        <div class="quick-name">人像 · 合影</div>
+        <div class="quick-era">印相纸质感</div>
+        <div class="quick-desc">暖调柔肤发黄褪色，家庭合影首选</div>
+      </div>
+      <div class="quick-kws">
+        <span class="quick-kw">怀旧</span>
+        <span class="quick-kw">绸纹</span>
+      </div>
+    </div>
+    <div class="quick-card" onclick="selectQuickMode('赛博')">
+      <div class="quick-card-top">
+        <div class="quick-thumb">🦴</div>
+        <div class="quick-tag">艺术</div>
+      </div>
+      <div class="quick-meta">
+        <div class="quick-name">创意 · 艺术</div>
+        <div class="quick-era">X光青蓝调</div>
+        <div class="quick-desc">青蓝色调工业风，赛博朋克电影宽幅感</div>
+      </div>
+      <div class="quick-kws">
+        <span class="quick-kw">工业</span>
+        <span class="quick-kw">宽幅</span>
+      </div>
+    </div>
+    <div class="quick-card" onclick="selectQuickMode('80年代')">
+      <div class="quick-card-top">
+        <div class="quick-thumb">📼</div>
+        <div class="quick-tag">复古</div>
+      </div>
+      <div class="quick-meta">
+        <div class="quick-name">复古 · 怀旧</div>
+        <div class="quick-era">80s黑白颗粒</div>
+        <div class="quick-desc">粗颗粒高反差，七八十年代老电影感</div>
+      </div>
+      <div class="quick-kws">
+        <span class="quick-kw">颗粒</span>
+        <span class="quick-kw">老照片</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 胶片选择页 ============ -->
+<div class="page" id="pageSelect">
+  <div class="topbar">
+    <button class="back-btn" onclick="goPage('pageUpload')">‹</button>
+    <div class="top-title">选 择 胶 片</div>
+    <div class="top-right"></div>
+  </div>
+  <div class="selected-preview">
+    <img id="previewImg" src="" alt="预览">
+  </div>
+  <div class="mode-tabs">
+    <div class="mode-tab active" id="tabFilm" onclick="switchMode('film')">🎞️ 胶片选择</div>
+    <div class="mode-tab" id="tabChat" onclick="switchMode('chat')">💬 AI 推荐</div>
+  </div>
+  <div id="chatPanel" style="display:none">
+    <div class="chat-input-box">
+      <div class="chat-hint">💬 告诉我你想要的感觉，比如「80年代的黑白颗粒感」「青蓝色的赛博朋克」，我来帮你匹配最适合的公元胶片。</div>
+      <div class="suggestion-chips" id="chips"></div>
+      <div class="chat-input-wrap">
+        <input class="chat-input" id="chatInput" placeholder="描述你想要的胶片感觉..." onkeypress="if(event.key==='Enter')doMatch()">
+        <button class="send-btn" id="sendBtn" onclick="doMatch()">➤</button>
+      </div>
+    </div>
+  </div>
+  <div id="filmPanel">
+    <div class="section-title">公 元 胶 片 库</div>
+    <div class="film-list" id="filmList"></div>
+  </div>
+  <div class="bottom-bar">
+    <button class="btn btn-primary" id="confirmBtn" disabled onclick="startProcess()">开始冲印 · 应用胶片</button>
+  </div>
+</div>
+
+<!-- ============ 结果页 ============ -->
+<div class="page" id="pageResult">
+  <div class="topbar">
+    <button class="back-btn" onclick="goPage('pageSelect')">‹</button>
+    <div class="top-title">冲 印 完 成</div>
+    <div class="top-right" style="font-size:11px;color:#6b5540;letter-spacing:1px">DONE</div>
+  </div>
+  <div class="result-hero">
+    <div class="result-img-wrap">
+      <div class="compare" id="compareBox">
+        <img id="imgBefore" src="" alt="原图">
+        <img class="after" id="imgAfter" src="" alt="处理后">
+        <div class="compare-label label-before">原 图</div>
+        <div class="compare-label label-after">冲 印 后</div>
+        <div class="slider-handle" id="sliderHandle"></div>
+      </div>
+    </div>
+    <div class="film-result-banner" id="resultBanner" style="margin-top:16px">
+      <div class="banner-icon">🎞️</div>
+      <div class="banner-text">
+        <div class="banner-name" id="resultFilmName"></div>
+        <div class="banner-era" id="resultFilmEra"></div>
+      </div>
+    </div>
+  </div>
+  <div class="action-grid">
+    <button class="action-btn primary" onclick="downloadImage()">⬇ 保存冲印图</button>
+    <button class="action-btn" onclick="goPage('pageSelect')">🔄 换种胶片</button>
+    <button class="action-btn" onclick="goPage('pageUpload')">📷 换张照片</button>
+    <button class="action-btn" onclick="shareImage()">📤 分享给朋友</button>
+  </div>
+  <div class="section-title">胶 片 档 案</div>
+  <div class="story-card">
+    <div class="story-title" id="storyTitle"></div>
+    <div class="story-content" id="storyContent"></div>
+    <div class="fun-fact" id="funFact"></div>
+  </div>
+  <div style="height:40px"></div>
+</div>
+
+<!-- ============ 加载遮罩 ============ -->
+<div class="loading-mask" id="loadingMask">
+  <div class="film-roll"><div class="film-core">🎞️</div></div>
+  <div class="loading-title" id="loadingTitle">正在进入暗房...</div>
+  <div class="loading-step">▸ 取出底片</div>
+  <div class="loading-step">▸ 配制显影液</div>
+  <div class="loading-step">▸ 温控冲印中</div>
+  <div class="loading-step">▸ 定影·水洗·晾干</div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- ============ 全局页面水印：半透明公元印章（不影响操作，使用era_logo_red.png） ============ -->
+<div class="page-watermark" aria-hidden="true">
+  <img id="pgWatermark" alt="公元厂标" onerror="this.style.display='none'">
+</div>
+
+<script>
+/* ============ 全局状态 ============ */
+const API_BASE = location.protocol === 'file:' ? 'http://localhost:8000' : '';
+let currentFile = null;
+let currentFileBase64 = null;
+let selectedFilmId = null;
+let filmsCache = [];
+
+/* ============ 启动环境检测：file://横幅 + 健康检查 ============ */
+(function(){
+  const banner = document.getElementById('envBanner');
+  function setBanner(kind, html){ banner.className = 'env-banner ' + kind; banner.innerHTML = html; banner.style.display = 'block'; }
+  function hideBanner(){ banner.style.display = 'none'; }
+
+  if (location.protocol === 'file:') {
+    setBanner('warn',
+      '<div class="title">⚠️ 你正在通过「双击直接打开」前端页面（file:// 协议）</div>'+
+      '<div>正常打开方式：先启动后端服务，然后浏览器访问 <code>http://localhost:8000/</code>'+
+      ' &nbsp; 现在我已自动把 API 地址切换到 <code>'+API_BASE+'</code>。</div>'+
+      '<div class="row">'+
+      '<button class="env-btn primary" onclick="window._verifyBackend()">🔍 验证后端服务是否已启动</button>'+
+      '<button class="env-btn ghost" onclick="location.href=\''+API_BASE+'/\'">👉 如果后端已启动，点这里跳转（推荐方式）</button>'+
+      '</div>'+
+      '<div style="margin-top:8px;opacity:.85">📘 后端启动方法：在项目 <code>backend</code> 目录下执行 <code>python main.py</code>，看到「Uvicorn running on」那一行才算启动成功。</div>'
+    );
+  }
+
+  // 健康检查函数，挂到 window 便于按钮调用
+  window._verifyBackend = async function(){
+    const t0 = Date.now();
+    try{
+      const res = await fetch(API_BASE + '/api/health', {cache:'no-store'});
+      if(!res.ok) throw new Error('HTTP '+res.status);
+      const data = await res.json();
+      const ms = Date.now()-t0;
+      setBanner('ok',
+        '<div class="title">✅ 后端服务已启动并连通</div>'+
+        '<div>状态：<code>'+data.status+'</code> &nbsp; | &nbsp; 胶片库：<code>'+data.films_available+' 款</code> &nbsp; | &nbsp; 延迟：<code>'+ms+' ms</code></div>'+
+        '<div class="row"><button class="env-btn ghost" onclick="location.reload()">🔄 刷新胶片列表 & 页面</button></div>'
+      );
+      return true;
+    }catch(e){
+      setBanner('err',
+        '<div class="title">❌ 连接后端服务失败</div>'+
+        '<div>原因：后端服务 <b>还没启动</b>，或 API 地址 <code>'+API_BASE+'</code> 不正确。</div>'+
+        '<div class="row">'+
+        '<button class="env-btn primary" onclick="window._verifyBackend()">🔂 重新尝试连接</button>'+
+        '<button class="env-btn ghost" onclick="window._helpHowToStart()">📖 我该怎么启动后端？</button>'+
+        '</div>'
+      );
+      return false;
+    }
+  };
+
+  window._helpHowToStart = function(){
+    alert('启动后端 3 步走：\n\n'+
+      '1. 按 Win + R 输入 cmd 回车，打开黑窗口\n'+
+      '2. 输入：cd /d c:\\Users\\mrl25\\Downloads\\gongyuan\\backend  回车\n'+
+      '3. 输入：python main.py  回车\n\n'+
+      '看到黑窗口最后一行显示「Uvicorn running on http://0.0.0.0:8000」\n'+
+      '（这行才是真的启动成功！之前的打印不算）\n\n'+
+      '然后点「重新尝试连接」即可。');
+  };
+
+  // 页面加载后静默做一次健康检查
+  setTimeout(window._verifyBackend, 400);
+
+  // 给页面右下角水印动态赋值（兼容file://和HTTP两种打开方式）
+  try {
+    const wmImg = document.getElementById('pgWatermark');
+    if (wmImg) wmImg.src = API_BASE + '/assets/era_logo_red.png';
+  } catch(_) {}
+})();
+
+const SUGGESTIONS = [
+  '80年代黑白胶卷颗粒感','照相馆专业人像胶片',
+  '90年代家庭相册暖色调','幻灯片反转片通透感',
+  '70年代露天电影宽幅感','青蓝色X光赛博工业风',
+  '印刷制版黑白分明风','暗房手工绸纹印相纸',
+  '高对比粗颗粒怀旧感','1号软反差·柔和人像',
+  '4号特硬·线条文档','绒面相纸温暖风景'
+];
+
+const FILM_ICONS = {
+  film_001: '🎞️', film_002: '👤', film_003: '🎨',
+  film_004: '🔮', film_005: '🎬', film_006: '🦴',
+  film_007: '🖨️', film_008: '📜'
+};
+/* 右上角小标签（参考胶片选择页截图排布：经典/怀旧/初代/获奖/工业...） */
+const FILM_TAGS = {
+  film_001: '经典', film_002: '人像', film_003: '怀旧',
+  film_004: '专业', film_005: '获奖', film_006: '工业',
+  film_007: '印刷', film_008: '初代'
+};
+/* 卡片简介两行描述（fallback）：后端没给description时用 */
+const FILM_DESC_FALLBACK = {
+  film_001: '银盐质感·高反差·暗部层次丰富·颗粒适中',
+  film_002: '高解像力·柔光效果·层次丰富·照相馆御用',
+  film_003: '暖色调·红黄鲜艳·绿偏旧·褪色偏紫·家庭相册',
+  film_004: '油溶性色彩饱和·通透锐利·幻灯片放映效果',
+  film_005: '色彩饱和·层次丰富·媲美伊士曼银幕效果·35mm宽幅',
+  film_006: '蓝黑影像·极高反差·锐利·冷峻工业风',
+  film_007: '线条锐利·黑白分明·印刷网点·图文复刻',
+  film_008: '暖黑调·纸白泛米黄·光面绸纹绒面·暗房质感'
+};
+
+/* ============ 页面导航 ============ */
+function goPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+function showToast(msg, duration=2000){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), duration);
+}
+
+/* ============ 首页 ============ */
+function showFilmsIntro(){
+  showToast('胶片库共 8 款公元胶片，覆盖民用/专业/工业/特种');
+}
+
+/* ============ 上传 ============ */
+const dropZone = document.getElementById('dropZone');
+dropZone?.addEventListener('dragover', e=>{e.preventDefault();dropZone.classList.add('dragover')});
+dropZone?.addEventListener('dragleave', ()=>dropZone.classList.remove('dragover'));
+dropZone?.addEventListener('drop', e=>{
+  e.preventDefault();dropZone.classList.remove('dragover');
+  if(e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]);
+});
+
+let pendingQuickMode = null;
+function selectQuickMode(mode){ pendingQuickMode = mode; document.getElementById('fileInput').click(); }
+
+function handleFile(file){
+  if(!file || !file.type.startsWith('image/')){
+    showToast('请选择图片文件');return;
+  }
+  if(file.size > 20 * 1024 * 1024){
+    showToast('图片过大（>20MB），请压缩后上传');return;
+  }
+  currentFile = file;
+  const reader = new FileReader();
+  reader.onload = e => {
+    currentFileBase64 = e.target.result;
+    document.getElementById('previewImg').src = currentFileBase64;
+    loadFilms();
+    goPage('pageSelect');
+    if(pendingQuickMode){
+      setTimeout(()=>{
+        switchMode('chat');
+        document.getElementById('chatInput').value = pendingQuickMode;
+        doMatch();
+        pendingQuickMode = null;
+      }, 400);
+    }
+  };
+  reader.readAsDataURL(file);
+}
+
+/* ============ 胶片列表 ============ */
+async function loadFilms(){
+  if(filmsCache.length){renderFilmList();return;}
+  try{
+    const res = await fetch(API_BASE + '/api/films');
+    const data = await res.json();
+    filmsCache = data.films;
+  }catch(e){
+    filmsCache = [
+      {id:'film_001',name:'公元黑白胶卷 1980s',era:'1980年代',category:'黑白胶卷',keywords:['80年代','银盐颗粒','高对比','怀旧','135胶卷']},
+      {id:'film_002',name:'公元人相胶片（4×5英寸）',era:'1955年起',category:'专业人像',keywords:['人像','高解像力','层次丰富','大画幅','照相馆']},
+      {id:'film_003',name:'公元彩色负片 1985',era:'1980年代中',category:'彩色胶卷',keywords:['彩色','暖色调','褪色','怀旧','富士大轴']},
+      {id:'film_004',name:'公元彩色反转片（幻灯片）',era:'1980年代末',category:'专业彩色',keywords:['反转片','油溶性','色彩艳丽','饱和','通透']},
+      {id:'film_005',name:'公元彩色电影正片 1970s',era:'1973年',category:'电影胶片',keywords:['电影','宽幅','暖橙','放映机','35mm拷贝']},
+      {id:'film_006',name:'公元X光胶片（医用/工业）',era:'1960-90年代',category:'特种胶片',keywords:['X光','蓝黑','高反差','透视','无损检测']},
+      {id:'film_007',name:'公元印刷制版胶片',era:'1964年',category:'工业印刷',keywords:['制版','印刷','二值化','黑白分明','网点']},
+      {id:'film_008',name:'公元黑白印相纸（2号·绸纹）',era:'1952年起',category:'相纸类',keywords:['印相纸','绸纹','暖黑','米黄纸基','暗房手工']}
+    ];
+  }
+  renderFilmList();
+  renderChips();
+}
+
+function renderFilmList(){
+  const list = document.getElementById('filmList');
+  list.innerHTML = filmsCache.map(f => {
+    const tag = FILM_TAGS[f.id] || (f.category || '');
+    const desc = f.description || FILM_DESC_FALLBACK[f.id] || (f.keywords || []).join(' · ');
+    return `
+    <div class="film-card ${selectedFilmId===f.id?'selected':''}" onclick="selectFilm('${f.id}')">
+      <div class="film-card-top">
+        <div class="film-thumb">${FILM_ICONS[f.id]||'🎞️'}</div>
+        ${tag ? `<div class="film-tag">${tag}</div>` : ''}
+      </div>
+      <div class="film-meta">
+        <div class="film-name">${f.name}</div>
+        <div class="film-era">${f.era || ''} · ${f.category || ''}</div>
+        <div class="film-desc">${desc}</div>
+        <div class="film-kws">${(f.keywords||[]).slice(0,3).map(k=>`<span class="kw">${k}</span>`).join('')}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderChips(){
+  document.getElementById('chips').innerHTML = SUGGESTIONS.map(s=>
+    `<span class="chip" onclick="pickChip('${s}')">${s}</span>`
+  ).join('');
+}
+
+function pickChip(s){ document.getElementById('chatInput').value = s; doMatch(); }
+
+function selectFilm(id){
+  selectedFilmId = id;
+  document.querySelectorAll('.film-card').forEach(c=>c.classList.remove('selected'));
+  event.currentTarget.classList.add('selected');
+  document.getElementById('confirmBtn').disabled = false;
+}
+
+function switchMode(mode){
+  document.getElementById('tabFilm').classList.toggle('active', mode==='film');
+  document.getElementById('tabChat').classList.toggle('active', mode==='chat');
+  document.getElementById('filmPanel').style.display = mode==='film' ? '' : 'none';
+  document.getElementById('chatPanel').style.display = mode==='chat' ? '' : 'none';
+}
+
+/* ============ AI 匹配 ============ */
+async function doMatch(){
+  const text = document.getElementById('chatInput').value.trim();
+  if(!text){ showToast('请先描述你想要的感觉'); return; }
+  showLoading('正在匹配胶片...');
+  try{
+    const res = await fetch(API_BASE + '/api/match', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({text})
+    });
+    const data = await res.json();
+    selectedFilmId = data.matched_film_id;
+    switchMode('film');
+    document.querySelectorAll('.film-card').forEach(c=>{
+      c.classList.toggle('selected', c.getAttribute('onclick').includes(selectedFilmId));
+    });
+    document.getElementById('confirmBtn').disabled = false;
+    showToast(`已匹配：${data.matched_film_name}`);
+  }catch(e){
+    const fallback = {
+      '人像':'film_002','人物':'film_002','脸':'film_002','证件照':'film_002','照相馆':'film_002',
+      '彩色':'film_003','彩卷':'film_003','彩照':'film_003','暖黄':'film_003','褪色':'film_003','90':'film_003','九十':'film_003','相册':'film_003',
+      '反转':'film_004','幻灯':'film_004','投影':'film_004','通透':'film_004','饱和':'film_004','鲜艳':'film_004',
+      '电影':'film_005','宽幅':'film_005','银幕':'film_005','放映':'film_005','拷贝':'film_005','70':'film_005','七十':'film_005','露天':'film_005',
+      'x光':'film_006','X光':'film_006','透视':'film_006','骨骼':'film_006','医用':'film_006','青蓝':'film_006','赛博':'film_006','冷峻':'film_006',
+      '制版':'film_007','印刷':'film_007','报纸':'film_007','网点':'film_007','二值':'film_007','黑白分明':'film_007','线条':'film_007',
+      '相纸':'film_008','印相':'film_008','放大纸':'film_008','绸纹':'film_008','光面':'film_008','绒面':'film_008','纸基':'film_008','暗房':'film_008','铂金':'film_008','暖棕':'film_008',
+      '黑白':'film_001','胶卷':'film_001','135':'film_001','120':'film_001','80':'film_001','八十':'film_001','怀旧':'film_001','颗粒':'film_001','复古':'film_001','高对比':'film_001'
+    };
+    let hit = 'film_001';
+    for(const k in fallback){ if(text.includes(k)){ hit = fallback[k]; break; } }
+    selectedFilmId = hit;
+    switchMode('film');
+    renderFilmList();
+    document.getElementById('confirmBtn').disabled = false;
+    showToast(`已匹配：${filmsCache.find(f=>f.id===hit)?.name||'胶片'}`);
+  }finally{ hideLoading(); }
+}
+
+/* ============ 处理 ============ */
+function showLoading(title='冲印中...'){
+  document.getElementById('loadingTitle').textContent = title;
+  document.getElementById('loadingMask').classList.add('active');
+}
+function hideLoading(){ document.getElementById('loadingMask').classList.remove('active'); }
+
+async function startProcess(){
+  if(!currentFile || !selectedFilmId){ return; }
+  showLoading('正在冲印照片...');
+  try{
+    const fd = new FormData();
+    fd.append('file', currentFile);
+    fd.append('film_id', selectedFilmId);
+    const res = await fetch(API_BASE + '/api/process/upload', {method:'POST', body:fd});
+    if(!res.ok) throw new Error('处理失败');
+    const data = await res.json();
+    showResult(data);
+  }catch(e){
+    try{
+      const res2 = await fetch(API_BASE + '/api/process/base64', {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({image_base64:currentFileBase64, film_id:selectedFilmId})
+      });
+      const data2 = await res2.json();
+      showResult(data2, true);
+    }catch(err){
+      showToast('后端服务未连接，请先启动后端再冲印。点顶部横幅的「验证后端」按钮查看状态');
+      window._verifyBackend && window._verifyBackend();
+    }
+  }finally{ hideLoading(); }
+}
+
+function showResult(data, useB64Processed=false){
+  const origSrc = useB64Processed ? currentFileBase64 : (data.original.base64 ? `data:image/jpeg;base64,${data.original.base64}` : (API_BASE + data.original.url));
+  const procSrc = useB64Processed
+    ? `data:${data.processed.mime_type};base64,${data.processed.base64}`
+    : (data.processed.base64 ? `data:image/jpeg;base64,${data.processed.base64}` : (API_BASE + data.processed.url));
+  document.getElementById('imgBefore').src = origSrc;
+  document.getElementById('imgAfter').src = procSrc;
+  document.getElementById('resultFilmName').textContent = data.film.name;
+  document.getElementById('resultFilmEra').textContent = data.film.era + ' · ' + data.film.category;
+  document.getElementById('storyTitle').textContent = data.story.title;
+  document.getElementById('storyContent').textContent = data.story.content;
+  document.getElementById('funFact').textContent = data.story.fun_fact;
+  window.__processedSrc = procSrc;
+  goPage('pageResult');
+  setTimeout(initCompare, 100);
+}
+
+/* ============ 对比滑块 ============ */
+function initCompare(){
+  const box = document.getElementById('compareBox');
+  const handle = document.getElementById('sliderHandle');
+  if(!box || !handle) return;
+  let dragging = false;
+  const setSplit = x => {
+    const rect = box.getBoundingClientRect();
+    const pct = Math.max(0, Math.min(100, ((x - rect.left)/rect.width)*100));
+    box.style.setProperty('--split', pct + '%');
+  };
+  const start = e => {dragging = true; setSplit(e.touches?e.touches[0].clientX:e.clientX);};
+  const move = e => {if(!dragging)return; setSplit(e.touches?e.touches[0].clientX:e.clientX);};
+  const end = () => dragging = false;
+  box.addEventListener('mousedown', start);
+  window.addEventListener('mousemove', move);
+  window.addEventListener('mouseup', end);
+  box.addEventListener('touchstart', start, {passive:true});
+  window.addEventListener('touchmove', move, {passive:true});
+  window.addEventListener('touchend', end);
+  box.style.setProperty('--split', '50%');
+}
+
+/* ============ 下载分享 ============ */
+function downloadImage(){
+  if(!window.__processedSrc){ showToast('图片未就绪'); return; }
+  const a = document.createElement('a');
+  a.href = window.__processedSrc;
+  a.download = `公元胶片_${Date.now()}.jpg`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  showToast('已保存到本地');
+}
+
+function shareImage(){
+  if(navigator.share){
+    showToast('正在调起分享面板...');
+  }else{
+    showToast('请长按图片保存后分享');
+  }
+}
+</script>
+</body>
+</html>
